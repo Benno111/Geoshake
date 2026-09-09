@@ -1,15 +1,15 @@
 {
-  "geode": "4.0.0",
+  "geode": "5.10.1",
   "gd": {
-    "win": "2.2074",
-    "android": "2.2074",
-    "mac": "2.2074",
-    "ios": "2.2074"
+    "win": "2.2081",
+    "android": "2.2081",
+    "mac": "2.2081",
+    "ios": "2.2081"
   },
   "id": "benno111.geoshake",
-  "name": "GeoShake",
-  "version": "v1.0.0",
-  "developer": "GeoShake Contributors",
+  "name": "geoShake",
+  "version": "1.0.0",
+  "developer": "Benno111",
   "description": "Mirrors Geometry Dash Shake Triggers to controller and phone vibration.",
   "repository": "https://github.com/GeoShake/GeoShake",
   "settings": {

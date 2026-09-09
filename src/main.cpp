@@ -6,8 +6,8 @@
 using namespace geode::prelude;
 
 class $modify(GeoShakeGameLayer, GJBaseGameLayer) {
-    void shakeCamera(float strength, float duration, float interval) {
-        GJBaseGameLayer::shakeCamera(strength, duration, interval);
+    void shakeCamera(float duration, float strength, float interval) {
+        GJBaseGameLayer::shakeCamera(duration, strength, interval);
 
         auto mod = Mod::get();
         auto pulse = geoshake::fromShake(

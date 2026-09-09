@@ -18,25 +18,28 @@ scale is provided for accessibility and hardware differences.
 
 ## Build
 
-Install the [Geode SDK](https://docs.geode-sdk.org/getting-started/), then run:
+This version targets Geometry Dash **2.2081** (the 2.208 patch release) on all
+listed platforms and requires **Geode 5.10.1** or a compatible newer 5.x loader.
+Use Geode SDK **5.10.1**, CMake **3.25+**, and a compiler with **C++23** support.
+
+Install the [Geode SDK](https://docs.geode-sdk.org/getting-started/), check out
+bindings revision `7f6c2a75742856de88dad354e576dcff8a28e881` from
+`https://github.com/geode-sdk/bindings`, then run:
 
 ```sh
 export GEODE_SDK=/path/to/geode
-cmake -S . -B build
+export GEODE_BINDINGS_REPO_PATH=/path/to/bindings
+cmake -S . -B build -DSKIP_BUILDING_CODEGEN=OFF
 cmake --build build --config Release
 ```
 
 The build produces a `.geode` package through `setup_geode_mod`.
 
-For Geode 4.0.0, use bindings revision
-`23c39fcda5dc660d8e92f3fb14f29b0a58a15f98`, matching CI. Clone
-`https://github.com/geode-sdk/bindings`, check out that revision, and set
-`GEODE_BINDINGS_REPO_PATH` to the clone's absolute path. Add
-`-DSKIP_BUILDING_CODEGEN=OFF` to the CMake configure command so it builds the
-matching generator. Current bindings require SDK APIs absent from Geode 4.0.0.
+The pinned bindings and locally built generator match CI. Use a fresh build
+directory when upgrading from the Geode 4 version.
 
-For Android builds, use NDK `27.3.13750724`, matching CI. Geode 4's bundled
-fmt 11.0.2 fails compile-time format-string checks with NDK 29's Clang.
+For Android builds, use NDK `27.3.13750724`, matching CI. The current workflow
+builds Android64; other platforms require their respective toolchains.
 
 ## Behavior and limitations
 

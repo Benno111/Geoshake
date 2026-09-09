@@ -16,13 +16,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Build all supported platforms
+      - name: Build Android64
         uses: geode-sdk/build-geode-mod@main
         with:
           combine: true
-          # Match the bindings available when Geode 4.0.0 was released.
-          bindings-ref: '23c39fcda5dc660d8e92f3fb14f29b0a58a15f98'
+          # Pin the Geometry Dash 2.2081 bindings used with Geode 5.10.1.
+          bindings-ref: '7f6c2a75742856de88dad354e576dcff8a28e881'
           # Build the pinned generator instead of downloading the latest one.
           configure-args: '-DSKIP_BUILDING_CODEGEN=OFF'
-          # Geode 4's fmt 11.0.2 fails consteval checks with NDK 29's Clang.
+          # Keep the Android toolchain reproducible.
           android-ndk-version: '27.3.13750724'

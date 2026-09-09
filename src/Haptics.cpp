@@ -1,5 +1,7 @@
 #include "Haptics.hpp"
 
+#include <Geode/platform/cplatform.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
