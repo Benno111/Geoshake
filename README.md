@@ -20,7 +20,8 @@ scale is provided for accessibility and hardware differences.
 
 This version targets Geometry Dash **2.2081** (the 2.208 patch release) on all
 listed platforms and requires **Geode 5.10.1** or a compatible newer 5.x loader.
-Use Geode SDK **5.10.1**, CMake **3.25+**, and a compiler with **C++23** support.
+Use Geode SDK **5.10.1**, CMake **3.25+**, and a compiler with **C++23** support
+(Clang **19+** or MSVC **19.44+**).
 
 Install the [Geode SDK](https://docs.geode-sdk.org/getting-started/), check out
 bindings revision `7f6c2a75742856de88dad354e576dcff8a28e881` from
@@ -38,7 +39,8 @@ The build produces a `.geode` package through `setup_geode_mod`.
 The pinned bindings and locally built generator match CI. Use a fresh build
 directory when upgrading from the Geode 4 version.
 
-For Android builds, use NDK `27.3.13750724`, matching CI. The current workflow
+For Android builds, use NDK `29.0.14206865`, matching CI. NDK 27's Clang 18 is
+too old for Geode 5.10.1. The current workflow
 builds Android64; other platforms require their respective toolchains.
 
 ## Behavior and limitations
