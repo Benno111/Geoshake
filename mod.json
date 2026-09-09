@@ -6,7 +6,7 @@
     "mac": "2.2074",
     "ios": "2.2074"
   },
-  "id": "geoshake.same-shake-haptics",
+  "id": "benno111.geoshake",
   "name": "GeoShake",
   "version": "v1.0.0",
   "developer": "GeoShake Contributors",
@@ -39,4 +39,3 @@
     }
   }
 }
-
