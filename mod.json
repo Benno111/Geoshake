@@ -1,0 +1,42 @@
+{
+  "geode": "4.0.0",
+  "gd": {
+    "win": "2.2074",
+    "android": "2.2074",
+    "mac": "2.2074",
+    "ios": "2.2074"
+  },
+  "id": "geoshake.same-shake-haptics",
+  "name": "GeoShake",
+  "version": "v1.0.0",
+  "developer": "GeoShake Contributors",
+  "description": "Mirrors Geometry Dash Shake Triggers to controller and phone vibration.",
+  "repository": "https://github.com/GeoShake/GeoShake",
+  "settings": {
+    "controller-vibration": {
+      "name": "Controller vibration",
+      "description": "Send Shake Trigger strength and duration to every connected controller.",
+      "type": "bool",
+      "default": true
+    },
+    "phone-vibration": {
+      "name": "Phone vibration",
+      "description": "Mirror Shake Triggers through the phone haptic motor on Android and iOS.",
+      "type": "bool",
+      "default": true
+    },
+    "strength-scale": {
+      "name": "Haptic strength",
+      "description": "Scale the trigger's shake strength before sending it to haptics.",
+      "type": "float",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 2.0,
+      "control": {
+        "slider": true,
+        "input": true
+      }
+    }
+  }
+}
+
