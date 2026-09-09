@@ -22,5 +22,11 @@ if(NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Set GEODE_SDK to the path of a Geode SDK checkout")
 endif()
 
+# Geode 4's fmt dependency needs this workaround when cross-compiling on
+# Linux. Set it before loading the SDK so it applies to fmt and its consumers.
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+    option(GEODE_DISABLE_FMT_CONSTEVAL "Disable fmt consteval checks for Linux cross-builds" ON)
+endif()
+
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 setup_geode_mod(${PROJECT_NAME})
