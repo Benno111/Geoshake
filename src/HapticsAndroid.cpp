@@ -16,6 +16,41 @@ struct JniFrame {
     }
 };
 
+// Current launcher: Kotlin object BaseRobTopActivity.me is a WeakReference.
+// The caller owns a JNI local frame, including all references created here.
+jobject findGameContext(JNIEnv* env) {
+    auto launcherContext = [&]() -> jobject {
+        auto cls = env->FindClass("com/customRobTop/BaseRobTopActivity");
+        if (env->ExceptionCheck() || !cls) return nullptr;
+        auto instanceID = env->GetStaticFieldID(cls, "INSTANCE", "Lcom/customRobTop/BaseRobTopActivity;");
+        if (env->ExceptionCheck() || !instanceID) return nullptr;
+        auto instance = env->GetStaticObjectField(cls, instanceID);
+        if (env->ExceptionCheck() || !instance) return nullptr;
+        auto getMe = env->GetMethodID(cls, "getMe", "()Ljava/lang/ref/WeakReference;");
+        if (env->ExceptionCheck() || !getMe) return nullptr;
+        auto weak = env->CallObjectMethod(instance, getMe);
+        if (env->ExceptionCheck() || !weak) return nullptr;
+        auto weakClass = env->GetObjectClass(weak);
+        if (env->ExceptionCheck() || !weakClass) return nullptr;
+        auto get = env->GetMethodID(weakClass, "get", "()Ljava/lang/Object;");
+        if (env->ExceptionCheck() || !get) return nullptr;
+        auto context = env->CallObjectMethod(weak, get);
+        if (env->ExceptionCheck()) return nullptr;
+        return context;
+    };
+    if (auto context = launcherContext()) return context;
+    if (env->ExceptionCheck()) env->ExceptionClear();
+
+    // Older Cocos-based hosts expose a Context, not an Activity return type.
+    auto cls = env->FindClass("org/cocos2dx/lib/Cocos2dxActivity");
+    if (env->ExceptionCheck() || !cls) return nullptr;
+    auto getContext = env->GetStaticMethodID(cls, "getContext", "()Landroid/content/Context;");
+    if (env->ExceptionCheck() || !getContext) return nullptr;
+    auto context = env->CallStaticObjectMethod(cls, getContext);
+    if (env->ExceptionCheck()) return nullptr;
+    return context;
+}
+
 void vibrateLegacy(JNIEnv* env, jobject vibrator, jclass vibratorClass, jlong duration) {
     auto vibrate = env->GetMethodID(vibratorClass, "vibrate", "(J)V");
     if (env->ExceptionCheck() || !vibrate) return;
@@ -45,12 +80,9 @@ std::string getVibratorStatus() {
         return report + "JNI: could not allocate local frame";
     }
     JniFrame frame{env};
-    auto helper = env->FindClass("org/cocos2dx/lib/Cocos2dxHelper");
-    if (env->ExceptionCheck() || !helper) return report + "Activity: Cocos2dxHelper class lookup failed";
-    auto getActivity = env->GetStaticMethodID(helper, "getActivity", "()Landroid/app/Activity;");
-    if (env->ExceptionCheck() || !getActivity) return report + "Activity: getActivity method lookup failed";
-    auto activity = env->CallStaticObjectMethod(helper, getActivity);
-    if (env->ExceptionCheck() || !activity) return report + "Activity: unavailable or Java call failed";
+    auto activity = findGameContext(env);
+    if (env->ExceptionCheck() || !activity)
+        return report + "Context: launcher activity and Cocos fallback unavailable";
     auto activityClass = env->GetObjectClass(activity);
     if (env->ExceptionCheck() || !activityClass) return report + "Activity: class lookup failed";
 
@@ -119,11 +151,7 @@ void vibratePhone(Pulse pulse) {
     }
     JniFrame frame{env};
 
-    auto helper = env->FindClass("org/cocos2dx/lib/Cocos2dxHelper");
-    if (env->ExceptionCheck() || !helper) return;
-    auto getActivity = env->GetStaticMethodID(helper, "getActivity", "()Landroid/app/Activity;");
-    if (env->ExceptionCheck() || !getActivity) return;
-    auto activity = env->CallStaticObjectMethod(helper, getActivity);
+    auto activity = findGameContext(env);
     if (env->ExceptionCheck() || !activity) return;
     auto activityClass = env->GetObjectClass(activity);
     if (env->ExceptionCheck() || !activityClass) return;
