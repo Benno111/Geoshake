@@ -20,3 +20,5 @@ jobs:
         uses: geode-sdk/build-geode-mod@main
         with:
           combine: true
+          # Geode 4's fmt 11.0.2 fails consteval checks with NDK 29's Clang.
+          android-ndk-version: '27.3.13750724'

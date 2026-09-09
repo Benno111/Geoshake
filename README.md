@@ -28,6 +28,9 @@ cmake --build build --config Release
 
 The build produces a `.geode` package through `setup_geode_mod`.
 
+For Android builds, use NDK `27.3.13750724`, matching CI. Geode 4's bundled
+fmt 11.0.2 fails compile-time format-string checks with NDK 29's Clang.
+
 ## Behavior and limitations
 
 - The original camera shake always runs before haptics, even when vibration is off.
