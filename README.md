@@ -28,6 +28,13 @@ cmake --build build --config Release
 
 The build produces a `.geode` package through `setup_geode_mod`.
 
+For Geode 4.0.0, use bindings revision
+`23c39fcda5dc660d8e92f3fb14f29b0a58a15f98`, matching CI. Clone
+`https://github.com/geode-sdk/bindings`, check out that revision, and set
+`GEODE_BINDINGS_REPO_PATH` to the clone's absolute path. Add
+`-DSKIP_BUILDING_CODEGEN=OFF` to the CMake configure command so it builds the
+matching generator. Current bindings require SDK APIs absent from Geode 4.0.0.
+
 For Android builds, use NDK `27.3.13750724`, matching CI. Geode 4's bundled
 fmt 11.0.2 fails compile-time format-string checks with NDK 29's Clang.
 
