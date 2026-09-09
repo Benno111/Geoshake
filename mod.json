@@ -25,6 +25,12 @@
       "type": "bool",
       "default": true
     },
+    "phone-duration-only": {
+      "name": "Cocos-style phone vibration",
+      "description": "Use duration-only vibration on Android or one system vibration on iOS. Overrides the Android method toggles. Requires Phone vibration. Positive haptic strength does not change intensity; zero still mutes vibration.",
+      "type": "bool",
+      "default": false
+    },
     "android-modern-vibration": {
       "name": "Modern Android vibration",
       "description": "Use vibration effects with intensity control on Android. If both methods are enabled, modern vibration is tried first. Requires Phone vibration.",

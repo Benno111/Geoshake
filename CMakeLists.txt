@@ -12,8 +12,9 @@ add_library(${PROJECT_NAME} SHARED
 
 if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     enable_language(OBJCXX)
+    set_target_properties(${PROJECT_NAME} PROPERTIES OBJCXX_STANDARD 23 OBJCXX_STANDARD_REQUIRED ON)
     target_sources(${PROJECT_NAME} PRIVATE src/HapticsApple.mm)
-    target_link_libraries(${PROJECT_NAME} PRIVATE "-framework Foundation" "-framework UIKit")
+    target_link_libraries(${PROJECT_NAME} PRIVATE "-framework Foundation" "-framework UIKit" "-framework AudioToolbox")
 elseif(ANDROID)
     target_sources(${PROJECT_NAME} PRIVATE src/HapticsAndroid.cpp)
 endif()

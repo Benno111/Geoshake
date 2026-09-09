@@ -29,9 +29,10 @@ void vibratePhone(Pulse pulse) {
     if (pulse.strength <= 0.f || pulse.durationMs == 0) return;
     auto mod = geode::Mod::get();
     if (!mod->getSettingValue<bool>("phone-vibration")) return;
+    auto durationOnly = mod->getSettingValue<bool>("phone-duration-only");
     auto modernEnabled = mod->getSettingValue<bool>("android-modern-vibration");
     auto legacyEnabled = mod->getSettingValue<bool>("android-legacy-vibration");
-    if (!modernEnabled && !legacyEnabled) return;
+    if (!durationOnly && !modernEnabled && !legacyEnabled) return;
 
     auto vm = cocos2d::JniHelper::getJavaVM();
     if (!vm) return;
@@ -64,6 +65,13 @@ void vibratePhone(Pulse pulse) {
     if (env->ExceptionCheck() || !vibrator) return;
     auto vibratorClass = env->GetObjectClass(vibrator);
     if (env->ExceptionCheck() || !vibratorClass) return;
+
+    // Cocos-style mode uses the duration-only native API, independently of
+    // the intensity-aware mode's modern/legacy preferences.
+    if (durationOnly) {
+        vibrateLegacy(env, vibrator, vibratorClass, static_cast<jlong>(pulse.durationMs));
+        return;
+    }
 
     // Clear modern API failures before trying the optional legacy backend.
     auto fallback = [&] {

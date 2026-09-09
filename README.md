@@ -20,7 +20,13 @@ Use **Test vibration** in the mod settings to send a half-second pulse to enable
 devices (a single impact on iOS). The test uses saved settings, so apply changes
 to the vibration toggles or haptic strength before testing.
 
-Android has two vibration method toggles, both enabled by default:
+Enable **Cocos-style phone vibration** for native duration-only vibration on
+Android or one system vibration on iOS (where duration is ignored). This mode
+overrides the Android method toggles and applies to triggers and the test button.
+It requires **Phone vibration**; zero haptic strength still mutes it, but positive
+strength values do not change its intensity. The mode is off by default.
+
+With Cocos-style mode off, Android has two vibration method toggles, both enabled by default:
 
 | Modern | Legacy | Behavior |
 | --- | --- | --- |

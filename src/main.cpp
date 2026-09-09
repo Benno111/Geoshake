@@ -13,13 +13,14 @@ $execute {
         auto controller = mod->getSettingValue<bool>("controller-vibration");
         auto phone = mod->getSettingValue<bool>("phone-vibration");
 #ifdef GEODE_IS_ANDROID
-        phone = phone && (mod->getSettingValue<bool>("android-modern-vibration") ||
+        phone = phone && (mod->getSettingValue<bool>("phone-duration-only") ||
+            mod->getSettingValue<bool>("android-modern-vibration") ||
             mod->getSettingValue<bool>("android-legacy-vibration"));
 #endif
         auto scale = mod->getSettingValue<double>("strength-scale");
         if ((!controller && !phone) || scale <= 0.0) {
             FLAlertLayer::create("Vibration test",
-                "Enable phone or controller vibration and set haptic strength above zero. On Android, enable at least one phone vibration method. Apply changes before testing.",
+                "Enable phone or controller vibration and set haptic strength above zero. On Android, enable Cocos-style mode or a modern/legacy method. Apply changes before testing.",
                 "OK")->show();
             return;
         }
