@@ -16,6 +16,10 @@ creators do not need to place or configure a second trigger.
 Controller and phone vibration can be disabled independently. A global strength
 scale is provided for accessibility and hardware differences.
 
+Use **Test vibration** in the mod settings to send a half-second pulse to enabled
+devices (a single impact on iOS). The test uses saved settings, so apply changes
+to the vibration toggles or haptic strength before testing.
+
 ## Build
 
 This version targets Geometry Dash **2.2081** (the 2.208 patch release) on all

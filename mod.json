@@ -25,6 +25,14 @@
       "type": "bool",
       "default": true
     },
+    "vibration-test": {
+      "name": "Vibration test",
+      "description": "Send a half-second test pulse to enabled devices using the saved haptic strength. Apply setting changes before testing. iOS produces a single impact.",
+      "type": "button",
+      "buttons": {
+        "test": "Test vibration"
+      }
+    },
     "strength-scale": {
       "name": "Haptic strength",
       "description": "Scale the trigger's shake strength before sending it to haptics.",
