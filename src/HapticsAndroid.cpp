@@ -1,6 +1,7 @@
 #include "Haptics.hpp"
 
 #include <Geode/Geode.hpp>
+#include <Geode/cocos/platform/android/jni/JniHelper.h>
 #include <jni.h>
 
 using namespace geode::prelude;
@@ -10,14 +11,20 @@ namespace geoshake {
 void vibratePhone(Pulse pulse) {
     if (pulse.strength <= 0.f || pulse.durationMs == 0) return;
 
-    auto env = cocos2d::JniHelper::getEnv();
-    auto helper = env->FindClass("org/cocos2dx/lib/Cocos2dxHelper");
-    if (!helper) { env->ExceptionClear(); return; }
-    auto getActivity = env->GetStaticMethodID(
-        helper, "getActivity", "()Landroid/app/Activity;"
-    );
-    if (!getActivity) { env->ExceptionClear(); env->DeleteLocalRef(helper); return; }
-    auto activity = env->CallStaticObjectMethod(helper, getActivity);
+    cocos2d::JniMethodInfo getActivity{};
+    if (!cocos2d::JniHelper::getStaticMethodInfo(
+        getActivity, "org/cocos2dx/lib/Cocos2dxHelper",
+        "getActivity", "()Landroid/app/Activity;"
+    )) return;
+    auto env = getActivity.env;
+    auto helper = getActivity.classID;
+    auto activity = env->CallStaticObjectMethod(helper, getActivity.methodID);
+    if (env->ExceptionCheck() || !activity) {
+        env->ExceptionClear();
+        if (activity) env->DeleteLocalRef(activity);
+        env->DeleteLocalRef(helper);
+        return;
+    }
     auto activityClass = env->GetObjectClass(activity);
     auto getService = env->GetMethodID(
         activityClass, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;"
