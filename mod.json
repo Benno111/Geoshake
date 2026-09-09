@@ -43,6 +43,14 @@
       "type": "bool",
       "default": true
     },
+    "vibrator-debug": {
+      "name": "Vibrator diagnostics",
+      "description": "Check Android vibrator access, hardware, intensity support and permission without vibrating. Also writes the report to the Geode log. Available even when phone vibration is disabled.",
+      "type": "button",
+      "buttons": {
+        "status": "Vibrator status"
+      }
+    },
     "vibration-test": {
       "name": "Vibration test",
       "description": "Send a half-second test pulse to enabled devices using the saved haptic strength. Apply setting changes before testing. iOS produces a single impact.",

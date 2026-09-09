@@ -54,5 +54,11 @@ void vibrateControllers(Pulse pulse) {
 void vibratePhone(Pulse) {}
 #endif
 
+#if !defined(GEODE_IS_ANDROID)
+std::string getVibratorStatus() {
+    return "Vibrator diagnostics are available on Android only.";
+}
+#endif
+
 } // namespace geoshake
 

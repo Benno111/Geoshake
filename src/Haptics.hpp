@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace geoshake {
 
 struct Pulse {
@@ -13,6 +15,7 @@ Pulse fromShake(float strength, float duration, float interval, float scale);
 
 void vibrateControllers(Pulse pulse);
 void vibratePhone(Pulse pulse);
+std::string getVibratorStatus();
 
 } // namespace geoshake
 

@@ -7,6 +7,12 @@
 using namespace geode::prelude;
 
 $execute {
+    ButtonSettingPressedEventV3(Mod::get(), "vibrator-debug").listen([](std::string_view button) {
+        if (button != "status") return;
+        auto status = geoshake::getVibratorStatus();
+        log::info("Vibrator status:\n{}", status);
+        FLAlertLayer::create("Vibrator status", status, "OK")->show();
+    }).leak();
     ButtonSettingPressedEventV3(Mod::get(), "vibration-test").listen([](std::string_view button) {
         if (button != "test") return;
         auto mod = Mod::get();
