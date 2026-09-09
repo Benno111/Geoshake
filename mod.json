@@ -25,6 +25,18 @@
       "type": "bool",
       "default": true
     },
+    "android-modern-vibration": {
+      "name": "Modern Android vibration",
+      "description": "Use vibration effects with intensity control on Android. If both methods are enabled, modern vibration is tried first. Requires Phone vibration.",
+      "type": "bool",
+      "default": true
+    },
+    "android-legacy-vibration": {
+      "name": "Legacy Android vibration",
+      "description": "Allow duration-only Android vibration when modern vibration is disabled or fails. Disable modern vibration to force this method. Requires Phone vibration.",
+      "type": "bool",
+      "default": true
+    },
     "vibration-test": {
       "name": "Vibration test",
       "description": "Send a half-second test pulse to enabled devices using the saved haptic strength. Apply setting changes before testing. iOS produces a single impact.",

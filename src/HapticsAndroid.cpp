@@ -27,6 +27,11 @@ void vibrateLegacy(JNIEnv* env, jobject vibrator, jclass vibratorClass, jlong du
 
 void vibratePhone(Pulse pulse) {
     if (pulse.strength <= 0.f || pulse.durationMs == 0) return;
+    auto mod = geode::Mod::get();
+    if (!mod->getSettingValue<bool>("phone-vibration")) return;
+    auto modernEnabled = mod->getSettingValue<bool>("android-modern-vibration");
+    auto legacyEnabled = mod->getSettingValue<bool>("android-legacy-vibration");
+    if (!modernEnabled && !legacyEnabled) return;
 
     auto vm = cocos2d::JniHelper::getJavaVM();
     if (!vm) return;
@@ -60,32 +65,44 @@ void vibratePhone(Pulse pulse) {
     auto vibratorClass = env->GetObjectClass(vibrator);
     if (env->ExceptionCheck() || !vibratorClass) return;
 
+    // Clear modern API failures before trying the optional legacy backend.
+    auto fallback = [&] {
+        if (env->ExceptionCheck()) env->ExceptionClear();
+        if (legacyEnabled)
+            vibrateLegacy(env, vibrator, vibratorClass, static_cast<jlong>(pulse.durationMs));
+    };
+    if (!modernEnabled) {
+        fallback();
+        return;
+    }
+
     auto effectClass = env->FindClass("android/os/VibrationEffect");
     if (env->ExceptionCheck() || !effectClass) {
-        env->ExceptionClear();
-        vibrateLegacy(env, vibrator, vibratorClass, static_cast<jlong>(pulse.durationMs));
+        fallback();
         return;
     }
     auto createOneShot = env->GetStaticMethodID(
         effectClass, "createOneShot", "(JI)Landroid/os/VibrationEffect;"
     );
     if (env->ExceptionCheck() || !createOneShot) {
-        env->ExceptionClear();
-        vibrateLegacy(env, vibrator, vibratorClass, static_cast<jlong>(pulse.durationMs));
+        fallback();
         return;
     }
     auto vibrate = env->GetMethodID(vibratorClass, "vibrate", "(Landroid/os/VibrationEffect;)V");
     if (env->ExceptionCheck() || !vibrate) {
-        env->ExceptionClear();
-        vibrateLegacy(env, vibrator, vibratorClass, static_cast<jlong>(pulse.durationMs));
+        fallback();
         return;
     }
     auto amplitude = static_cast<jint>(1.f + pulse.strength * 254.f);
     auto effect = env->CallStaticObjectMethod(
         effectClass, createOneShot, static_cast<jlong>(pulse.durationMs), amplitude
     );
-    if (env->ExceptionCheck() || !effect) return;
+    if (env->ExceptionCheck() || !effect) {
+        fallback();
+        return;
+    }
     env->CallVoidMethod(vibrator, vibrate, effect);
+    if (env->ExceptionCheck()) fallback();
 }
 
 } // namespace geoshake

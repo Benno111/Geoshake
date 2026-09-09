@@ -20,6 +20,19 @@ Use **Test vibration** in the mod settings to send a half-second pulse to enable
 devices (a single impact on iOS). The test uses saved settings, so apply changes
 to the vibration toggles or haptic strength before testing.
 
+Android has two vibration method toggles, both enabled by default:
+
+| Modern | Legacy | Behavior |
+| --- | --- | --- |
+| On | On | Try modern effects first; fall back to legacy if the call fails. |
+| On | Off | Use modern effects only. |
+| Off | On | Force legacy duration-only vibration. |
+| Off | Off | Disable Android phone vibration. |
+
+**Phone vibration** remains the master switch. These choices apply to both shake
+triggers and the test button after applying settings. They do not affect iOS or
+controllers. Legacy vibration does not support intensity control.
+
 ## Build
 
 This version targets Geometry Dash **2.2081** (the 2.208 patch release) on all
