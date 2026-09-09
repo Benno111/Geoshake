@@ -67,3 +67,8 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Editor metadata and packaged mods
+.idea/
+.vscode/
+*.geode

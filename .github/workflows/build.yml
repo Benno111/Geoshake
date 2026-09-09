@@ -1,0 +1,22 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Geode mod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build all supported platforms
+        uses: geode-sdk/build-geode-mod@main
+        with:
+          combine: true
