@@ -20,15 +20,19 @@ struct JniFrame {
 // The caller owns a JNI local frame, including all references created here.
 jobject findGameContext(JNIEnv* env) {
     auto launcherContext = [&]() -> jobject {
-        auto cls = env->FindClass("com/customRobTop/BaseRobTopActivity");
-        if (env->ExceptionCheck() || !cls) return nullptr;
+        // Native game threads may not resolve application classes via FindClass.
+        // Use Cocos's class loader for both launcher and legacy host lookups.
+        cocos2d::JniMethodInfo meInfo{};
+        if (!cocos2d::JniHelper::getMethodInfo(meInfo,
+                "com/customRobTop/BaseRobTopActivity", "getMe",
+                "()Ljava/lang/ref/WeakReference;")) return nullptr;
+        if (env->ExceptionCheck() || !meInfo.classID || !meInfo.methodID) return nullptr;
+        auto cls = meInfo.classID;
         auto instanceID = env->GetStaticFieldID(cls, "INSTANCE", "Lcom/customRobTop/BaseRobTopActivity;");
         if (env->ExceptionCheck() || !instanceID) return nullptr;
         auto instance = env->GetStaticObjectField(cls, instanceID);
         if (env->ExceptionCheck() || !instance) return nullptr;
-        auto getMe = env->GetMethodID(cls, "getMe", "()Ljava/lang/ref/WeakReference;");
-        if (env->ExceptionCheck() || !getMe) return nullptr;
-        auto weak = env->CallObjectMethod(instance, getMe);
+        auto weak = env->CallObjectMethod(instance, meInfo.methodID);
         if (env->ExceptionCheck() || !weak) return nullptr;
         auto weakClass = env->GetObjectClass(weak);
         if (env->ExceptionCheck() || !weakClass) return nullptr;
@@ -42,11 +46,12 @@ jobject findGameContext(JNIEnv* env) {
     if (env->ExceptionCheck()) env->ExceptionClear();
 
     // Older Cocos-based hosts expose a Context, not an Activity return type.
-    auto cls = env->FindClass("org/cocos2dx/lib/Cocos2dxActivity");
-    if (env->ExceptionCheck() || !cls) return nullptr;
-    auto getContext = env->GetStaticMethodID(cls, "getContext", "()Landroid/content/Context;");
-    if (env->ExceptionCheck() || !getContext) return nullptr;
-    auto context = env->CallStaticObjectMethod(cls, getContext);
+    cocos2d::JniMethodInfo contextInfo{};
+    if (!cocos2d::JniHelper::getStaticMethodInfo(contextInfo,
+            "org/cocos2dx/lib/Cocos2dxActivity", "getContext",
+            "()Landroid/content/Context;")) return nullptr;
+    if (env->ExceptionCheck() || !contextInfo.classID || !contextInfo.methodID) return nullptr;
+    auto context = env->CallStaticObjectMethod(contextInfo.classID, contextInfo.methodID);
     if (env->ExceptionCheck()) return nullptr;
     return context;
 }
